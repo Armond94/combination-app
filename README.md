@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v20 or higher)
 - MySQL (v8 or higher)
 - yarn
 
@@ -10,19 +10,44 @@
 
 1. Clone the repository
 2. Install dependencies:
-   ```
-   yarn install
-   ```
+```
+yarn install
+```
 
 3. Set up the database:
-   - Create a MySQL database named `combinations_db`
-   - Update the database configuration in `src/config/database.ts` if needed
-   - Run the schema.sql file:
-     ```
-     mysql -u root -p < src/database/schema.sql
-     ```
+```
+CREATE DATABASE IF NOT EXISTS skillex_combinations;
 
-4. For development, you can use:
+USE skillex_combinations;
+
+-- items
+CREATE TABLE IF NOT EXISTS items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(10) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- responses
+CREATE TABLE IF NOT EXISTS responses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- combinations
+CREATE TABLE IF NOT EXISTS combinations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    response_id INT NOT NULL,
+    combination JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (response_id) REFERENCES responses(id)
+);
+
+-- indexes
+CREATE INDEX idx_items_name ON items(name);
+CREATE INDEX idx_combinations_response_id ON combinations(response_id); 
+ ```
+
+4. For start project
 ```
 yarn dev
 ```
@@ -44,7 +69,7 @@ yarn dev
 **Response:**
 ```json
 {
-  "id": 1,
+  "id": "_id",
   "combination": [
     ["A1", "B1"],
     ["A1", "B2"],
@@ -55,27 +80,8 @@ yarn dev
 }
 ```
 
-### Rules
-- Items with the same starting letter (e.g., A1 and A2) cannot be combined together
-- The API uses MySQL transactions to ensure data consistency
-- Each combination is stored with a unique ID
-
 ## Error Handling
 
 The API includes proper error handling for:
 - Invalid input validation
 - Transaction failures
-
-## Database Schema
-
-The database consists of three tables:
-- `items`: Stores the items (e.g., A1, B1, etc.)
-- `combinations`: Stores the generated combinations with their unique IDs
-- `responses`: Stores the responses sent to the client
-
-## Implementation Details
-- Uses raw SQL queries
-- Implements MySQL transactions for data consistency
-- Efficient combination generation algorithm
-- Input validation and error handling
-- TypeScript

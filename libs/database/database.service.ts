@@ -9,16 +9,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
-    console.log({
-      host: this.configService.get<string>('database.host'),
-      port: this.configService.get<number>('database.port'),
-      user: this.configService.get<string>('database.user'),
-      password: this.configService.get<string>('database.password'),
-      database: this.configService.get<string>('database.database'),
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    })
     this.pool = mysql.createPool({
       host: this.configService.get<string>('database.host'),
       port: this.configService.get<number>('database.port'),
@@ -37,11 +27,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
 
   async getConnection(): Promise<mysql.PoolConnection> {
     return await this.pool.getConnection();
-  }
-
-  async query<T>(sql: string, values?: any[]): Promise<T> {
-    const [rows] = await this.pool.execute(sql, values);
-    return rows as T;
   }
 
   async transaction<T>(

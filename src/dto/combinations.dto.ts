@@ -1,12 +1,5 @@
 import { IsArray, IsNumber, ArrayNotEmpty, Min } from 'class-validator';
-
-export class GetCombinationsResponse {
-  @IsNumber()
-  id: number;
-
-  @IsArray()
-  combination: string[][];
-}
+import { RowDataPacket } from 'mysql2';
 
 export class GenerateRequest {
   @IsArray()
@@ -22,4 +15,8 @@ export class GenerateResponse {
   id: number;
   @IsArray()
   combination: string[][];
+}
+
+export interface ItemResult extends RowDataPacket {
+  id: number;
 }
