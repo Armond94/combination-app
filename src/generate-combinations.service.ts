@@ -1,6 +1,14 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { DatabaseService } from '../libs/database/database.service';
-import { GenerateRequest, GenerateResponse } from './types';
+import {
+  GenerateRequest,
+  GenerateResponse,
+  GetCombinationsResponse,
+} from './dto/combinations.dto';
 import * as mysql from 'mysql2/promise';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
@@ -98,7 +106,7 @@ export class GenerateCombinationsService {
   }
 
   async generate(request: GenerateRequest): Promise<GenerateResponse> {
-    console.log(1111)
+    console.log(1111);
     const items = this.convertInputToItems(request.items);
 
     if (request.length > items.length) {
@@ -127,5 +135,39 @@ export class GenerateCombinationsService {
         combination: combinations,
       };
     });
+  }
+
+  async getById(id: number): Promise<GetCombinationsResponse> {
+    try {
+      const [responses] = await this.databaseService.query<RowDataPacket[]>(
+        'SELECT id FROM responses WHERE id = ?',
+        [id],
+      );
+      console.log({ responses });
+
+      if (!responses) {
+        throw new NotFoundException(`Response with ID ${id} not found`);
+      }
+
+      const [combinations] = await this.databaseService.query<RowDataPacket[]>(
+        'SELECT combination FROM combinations WHERE response_id = ? ORDER BY id',
+        [id],
+      );
+      console.log({ combinations });
+
+      if (combinations?.length) {
+        throw new NotFoundException(
+          `No combinations found for response ID ${id}`,
+        );
+      }
+
+      return {
+        id: responses.id,
+        combination: combinations.combination,
+      };
+    } catch (error) {
+      console.log('getById: ', error);
+      throw error;
+    }
   }
 }

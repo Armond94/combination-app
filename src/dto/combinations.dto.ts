@@ -1,5 +1,13 @@
 import { IsArray, IsNumber, ArrayNotEmpty, Min } from 'class-validator';
 
+export class GetCombinationsResponse {
+  @IsNumber()
+  id: number;
+
+  @IsArray()
+  combination: string[][];
+}
+
 export class GenerateRequest {
   @IsArray()
   @ArrayNotEmpty()
