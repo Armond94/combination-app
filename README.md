@@ -85,3 +85,8 @@ yarn dev
 The API includes proper error handling for:
 - Invalid input validation
 - Transaction failures
+
+## Postman Collection
+```
+skillex.postman_collection.json
+```
