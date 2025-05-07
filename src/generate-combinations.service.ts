@@ -48,6 +48,7 @@ export class GenerateCombinationsService {
         const responseId = responseResult.insertId;
 
         for (const combination of combinations) {
+          //TODO remove combination json and refactor logic to get data from items
           await connection.execute(
             'INSERT INTO combinations (response_id, combination) VALUES (?, ?)',
             [responseId, JSON.stringify(combination)],

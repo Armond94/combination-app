@@ -19,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"items\": [1, 2, 1, 2],\n  \"length\": 2\n}\n",
+					"raw": "{\n  \"items\": [1, 2, 1],\n  \"length\": 2\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -27,13 +27,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/generate",
+					"raw": "http://localhost:3000/combinations/generate",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
+						"combinations",
 						"generate"
 					]
 				}
